@@ -131,18 +131,36 @@ bread.sound()
 
 * `isinstance(인스턴스, 클래스)`
 """
-
-
+print(isinstance(bread, FishBread))
+print(isinstance([], FishBread))
+print(isinstance([], list))
 
 """isinstance는 주로 객체의 자료형을 판단할 때 사용합니다. 예를 들어 팩토리얼 함수는 1부터 n까지 양의 정수를 차례대로 곱해야 하는데, 실수와 음의 정수는 계산할 수 없습니다. 이런 경우에 isinstance를 사용하여 숫자(객체)가 정수일 때만 계산하도록 만들 수 있습니다."""
 
+# n! = n * (n-1)! = ... = n * ... * 1
+# factorial 자연수 -> int
+def factorial(n):
+    print(n, end=' ')
+    if n == 1 : return 1
+    return n * factorial(n-1)
 
+print(factorial(10))
+# print(factorial("1234"))  # TypeError: unsupported operand type(s) for -: 'str' and 'int'
 
-
+def factorial2(n):
+    if not isinstance(n, int):
+        print("정수가 아닙니다")
+        return 0
+    print(n, end=' ')
+    if n == 1 : return 1
+    return n * factorial(n-1)
+print(factorial2("1234"))
 
 """## 속성 사용하기
 
-지금까지 클래스에서 메서드를 만들고 호출해보았습니다. 이번에는 클래스에서 속성을 만들고 사용해보겠습니다. 속성(attribute)을 만들 때는 `__init__` 메서드 안에서 self.속성에 값을 할당합니다.
+지금까지 클래스에서 메서드를 만들고 호출해보았습니다.
+이번에는 클래스에서 속성을 만들고 사용해보겠습니다.
+속성(attribute)을 만들 때는 `__init__` 메서드 안에서 self.속성에 값을 할당합니다.
 
 ```
 class 클래스이름:
@@ -151,7 +169,17 @@ class 클래스이름:
 ```
 """
 
+class Student:
+    def __init__(self):  # __init__ -> 자동으로 실행
+        # class -> 클래스명() -> 생성자
+        print("Student가 생성되었습니다!")
+        # self -> 클래스로 생성된 자기 자신
+        # self.변수명 -> 클래스로 생성된 객체(인스턴스)에 소속된 변수 == 속성을 대입.
+        # self.name = "아메리카노"
+        self.name = "투샷아메리카노"
 
+s = Student()  # Student 클래스로, 인스턴스를 생성해서 객체를 s라는 변수에 할당
+print(s.name)
 
 """```
 __init__ 메서드는 james = Person()처럼 클래스에 ( )(괄호)를 붙여서 인스턴스를 만들 때 호출되는 특별한 메서드입니다.
@@ -163,13 +191,48 @@ __init__ 메서드는 james = Person()처럼 클래스에 ( )(괄호)를 붙여�
 ```
 
 ```
-속성은 __init__ 메서드에서 만든다는 점과 self에 .(점)을 붙인 뒤 값을 할당한다는 점이 중요합니다.
+속성은 __init__ 메서드에서 만든다는 점과 self에 .(점)을 붙인 뒤 값을 할당(=)한다는 점이 중요합니다.
 클래스 안에서 속성을 사용할 때도 self.hello처럼 self에 점을 붙여서 사용하면 됩니다.
 ```
+"""
+
+kim = Student()
+print(f"kim.name {kim.name}")
+kim.name = "김커피"  # 외부에서도 새로운 값을 할당
+print(f"kim.name {kim.name}")
+
+lee = kim  # 할당
+print(f"lee.name {lee.name}")
+lee.name = "이커피"
+print(f"lee.name {lee.name}")
+print(f"kim.name {kim.name}")
+# 할당 -> 객체 = 컴퓨터에 저장되어있는 데이터 => 할당 (주소값)
+# kim.copy()
+import copy
+# 클래스를 통해서 직접 객체를 만들어서 사용하는 경우, 복사시에는 할당이 아니라 import copy
+park = copy.copy(lee)
+print(park.name)
+park.name = "박커피"
+print(park.name)
+print(lee.name)
+
+park.name = ["박", "커피"]  # 객체
+# choi = copy.copy(park)
+choi = copy.deepcopy(park)
+print(choi.name)
+choi.name.append("최")
+print(choi.name)
+print(park.name)
+# deepcopy > copy : 더 많은 cpu 자원.
+"""
 
 ### self의 의미
 
-그런데 도데체 self는 뭘까요? self는 인스턴스 자기 자신을 의미합니다. 우리는 인스턴스가 생성될 때 self.hello = '안녕하세요.'처럼 자기 자신에 속성을 추가했습니다. 여기서 `__init__`의 매개변수 self에 들어가는 값은 Person()이라 할 수 있습니다. 그리고 self가 완성된 뒤 james에 할당됩니다. 이후 메서드를 호출하면 현재 인스턴스가 자동으로 매개변수 self에 들어옵니다. 그래서 greeting 메서드에서 print(self.hello)처럼 속성을 출력할 수 있었던 것입니다.
+그런데 도데체 self는 뭘까요? self는 인스턴스 자기 자신을 의미합니다.
+우리는 인스턴스가 생성될 때 self.hello = '안녕하세요.'처럼 자기 자신에 속성을 추가했습니다.
+여기서 `__init__`의 매개변수 self에 들어가는 값은 Person()이라 할 수 있습니다.
+그리고 self가 완성된 뒤 james에 할당됩니다. 이후 메서드를 호출하면 현재 인스턴스가 자동으로 매개변수 self에 들어옵니다.
+그래서 greeting 메서드에서 print(self.hello)처럼 속성을 출력할 수 있었던 것입니다.
 
 ### 인스턴스를 만들 때 값 받기
 
@@ -183,7 +246,36 @@ class 클래스이름:
 ```
 """
 
+class Store:
+    def __init__(self):
+        self.title = "중화반점"
+        self.menu = ["소꼬리무침", "가지무침", "계란프라이스테이크"]
+        self.location = "신대방삼거리점"
 
+store1 = Store()  # 신대방삼거리점
+print(store1.title, store1.menu, store1.location)
+store2 = Store()  # 보라매점
+print(store2.title, store2.menu, store2.location)
+store2.location = "보라매점"
+print(store2.title, store2.menu, store2.location)
+
+class Store:
+    def __init__(self, location):  # self <- 건들지 않는 선에서....
+        # 외부에서 주입하고 싶은, 전달받고 싶은... 매개변수
+        self.title = "중화반점"
+        self.menu = ["소꼬리무침", "가지무침", "계란프라이스테이크"]
+        # self.location = "신대방삼거리점"
+        self.location = location
+
+# store1 = Store("신대방삼거리점")
+store1 = Store(location="신대방삼거리점")  # 신대방삼거리점
+print(store1.title, store1.menu, store1.location)
+store2 = Store(location="보라매점")  # 보라매점
+print(store2.title, store2.menu, store2.location)
+# store2.location = "보라매점"
+# print(store2.title, store2.menu, store2.location)
+store3 = Store(location="대방점")  # 보라매점
+print(store3.title, store3.menu, store3.location)
 
 """### 클래스의 위치 인수, 키워드 인수
 
@@ -191,14 +283,66 @@ class 클래스이름:
 """
 
 
+# class 클래스명:
+# (1) class (2) ' ' (3) 클래스명:
+class BungeoppangStore:
+    # 생성자 -> 매개변수들 전달 -> 내부의 속성(변수) 지정
+    # 생성자 = 함수 -> 위치 인수, 가변 인수, 키워드 가변인수, 기본값...
+    def __init__(self, name, *args, price=1200, **kwargs) -> None:
+        self.name = name  # 필수
+        self.menu = args  # 메뉴들
+        self.price = price  # 기본값이 있어서 입력 안해줘도 됨
+        self.visitors = kwargs
+
+    def introduce(self):
+        print(f"안녕하세요 여러분! {self.name} 붕어빵 가게가 오픈했습니다")
+        for i in self.menu:
+            print(f"저희는 {i} 메뉴가 있습니다")
+
+    # def sell(self, visitor):
+    #     if visitor in self.visitors:
+    #         print(f"단골은 반값이에요! {self.price // 2}원만 내세요")
+    #         # self.visitors[visitor] += self.price // 2
+    #         self.visitors.update({visitor :
+    #                              self.visitors[visitor] + (self.price // 2)})
+    #         return
+    #     self.visitors[visitor] = self.price
+    #     print("처음 방문이시네요~ 자주 오세요!")
+
+    def sell(self, visitor, item="치약붕어빵"):
+        if item not in self.menu:
+            print(f"{item}은 판매하는 메뉴중에 없습니다!")
+            return
+        if item == '치약붕어빵':
+            print(f"오늘 재료소진으로 치약붕어빵은 마감입니다")
+            return
+        if visitor in self.visitors:  # 딕셔너리 (visitors) -> keys
+            print(f"단골은 반값이에요! {self.price // 2}원만 내세요")
+            # self.visitors[visitor] += self.price // 2
+            self.visitors.update({visitor:
+                                      self.visitors[visitor] + (self.price // 2)})
+            return
+        self.visitors[visitor] = self.price
+        print("처음 방문이시네요~ 자주 오세요!")
 
 """키워드 인수와 딕셔너리 언패킹을 사용하려면 다음과 같이 **kwargs를 사용하면 됩니다. 이때 매개변수에서 값을 가져오려면 kwargs['name']처럼 사용해야 합니다."""
 
-
+store1 = BungeoppangStore('민트초코붕어빵 1호점', # name
+                          '치약붕어빵', '번데기붕어빵', '취두부붕어빵', # 가변인수 -> 여러 메뉴
+                          price=2000,  # 1200 -> 2000.
+                          james=5000, john=2000, kate=500  # 키워드가변인자 => kwargs => 방문자리스트
+                          )
+print(store1.visitors, store1.menu, store1.price)
+store1.introduce()
+store1.sell('dongdong')
+store1.sell('dongdong', '마약붕어빵')
+# https://sharegpt.com/c/ms0PWXZ
 
 """### 인스턴스를 생성한 뒤에 속성 추가하기, 특정 속성만 허용하기
 
-지금까지 클래스의 인스턴스 속성은 `__init__` 메서드에서 추가한 뒤 사용했습니다. 하지만 클래스로 인스턴스를 만든 뒤에도 인스턴스.속성 = 값 형식으로 속성을 계속 추가할 수 있습니다. 다음 Person 클래스는 빈 클래스이지만 인스턴스를 만든 뒤 name 속성을 추가합니다.
+지금까지 클래스의 인스턴스 속성은 `__init__` 메서드에서 추가한 뒤 사용했습니다.
+하지만 클래스로 인스턴스를 만든 뒤에도 인스턴스.속성 = 값 형식으로 속성을 계속 추가할 수 있습니다.
+다음 Person 클래스는 빈 클래스이지만 인스턴스를 만든 뒤 name 속성을 추가합니다.
 """
 
 
@@ -210,12 +354,29 @@ class 클래스이름:
 # 다른 메서드에서도 속성을 추가할 수 있습니다. 단, 이때는 메서드를 호출해야 속성이 생성됩니다.
 
 
-
 """## 클래스 속성과 인스턴스 속성 알아보기
 
 속성에는 클래스 속성과 인스턴스 속성 두 가지 종류가 있습니다. `__init__` 메서드에서 만들었던 속성은 인스턴스 속성입니다.
 
 ### 클래스 속성 사용하기
+
+"""
+
+class Store:
+    name = "붕어빵 가게"  # class에 공통으로 존재 # 클래스 변수들
+    def __init__(self, name="붕어빵 스토어"):
+        # self에 아무것도 대입이 되지 않았다면... 자체 Class에 소속된 -> 클래스 변수들이 먼저 할당.
+        # self.... -> 필요한 변수들을 넣어서.
+        # self.속성 => 인스턴스 속성 => 변수 -> 인스턴스(객체) => 개별적으로 존재하는...
+        print(f"(1) self.name : {self.name}")
+        self.name = name
+        print(f"(2) self.name : {self.name}")
+        print(f"Store.name : {Store.name}")
+
+s1 = Store()
+print(f"(3) name : {s1.name}")
+"""
+
 
 ```
 class 클래스이름:
@@ -225,7 +386,8 @@ class 클래스이름:
 
 
 
-"""put_bag 메서드에서 클래스 속성 bag에 접근할 때 self를 사용했습니다. 사실 self는 현재 인스턴스를 뜻하므로 클래스 속성을 지칭하기에는 조금 모호합니다."""
+"""put_bag 메서드에서 클래스 속성 bag에 접근할 때 self를 사용했습니다.
+사실 self는 현재 인스턴스를 뜻하므로 클래스 속성을 지칭하기에는 조금 모호합니다."""
 
 
 
@@ -236,13 +398,21 @@ class 클래스이름:
 
 
 
-"""Person.bag이라고 하니 클래스 Person에 속한 bag 속성이라는 것을 바로 알 수 있습니다. 마찬가지로 클래스 바깥에서도 다음과 같이 클래스 이름으로 클래스 속성에 접근하면 됩니다."""
+"""Person.bag이라고 하니 클래스 Person에 속한 bag 속성이라는 것을 바로 알 수 있습니다.
+마찬가지로 클래스 바깥에서도 다음과 같이 클래스 이름으로 클래스 속성에 접근하면 됩니다."""
 
 
 
 """### 인스턴스 속성 사용하기"""
 
-
+class Car:
+    brand = "기아"
+    def __init__(self, owner):
+        self.owner = owner
+        print(f"이 차의 브랜드는 {Car.brand}이고, 주인은 {self.owner}입니다")
+car1 = Car("김코딩")
+car2 = Car("이코딩")
+car3 = Car("박코딩")
 
 """* 클래스 속성: 모든 인스턴스가 공유. 인스턴스 전체가 사용해야 하는 값을 저장할 때 사용
 * 인스턴스 속성: 인스턴스별로 독립되어 있음. 각 인스턴스가 값을 따로 저장해야 할 때 사용
@@ -272,14 +442,64 @@ class 파생클래스이름(기반클래스이름):
 ```
 """
 
+# 상속 -> 클래스 (재사용)
+class Car:
+    def __init__(self):
+        self.fuel = "기름"
+    def drive(self):
+        print(f"{self.fuel}(으)로 갑니다")
+
+c1 = Car()
+c1.drive()
+
+class EletricCar(Car):  # 이미 만들어놓은 걸 가지고 와서 재사용
+    def __init__(self):
+        self.fuel = '전기'  # fuel 연료
+    def charge(self):
+        print("전기를 충전합니다!")
+
+c2 = EletricCar()
+c2.drive()  # Car -> EletricCar (상속)
+c2.charge()
+
+class HydrogenCar(Car):  # 이미 만들어놓은 걸 가지고 와서 재사용
+    def __init__(self):
+        self.fuel = '수소'  # fuel 연료
+
+c3 = HydrogenCar()
+c3.drive()  # Car -> EletricCar (상속)
 
 
-"""이처럼 클래스 상속은 기반 클래스의 기능을 유지하면서 새로운 기능을 추가할 수 있습니다. 특히 클래스 상속은 연관되면서 동등한 기능일 때 사용합니다. 즉, 학생은 사람이므로 연관된 개념이고, 학생은 사람에서 역할만 확장되었을 뿐 동등한 개념입니다.
-
+"""이처럼 클래스 상속은 기반 클래스의 기능을 유지하면서 새로운 기능을 추가할 수 있습니다.
+특히 클래스 상속은 연관되면서 동등한 기능일 때 사용합니다.
+즉, 학생은 사람이므로 연관된 개념이고, 학생은 사람에서 역할만 확장되었을 뿐 동등한 개념입니다.
+-> 차 -> 전기차, 수소차, 기름차... 
 ## 기반 클래스의 속성 사용하기
 
-이번에는 기반 클래스에 들어있는 인스턴스 속성을 사용해보겠습니다. 다음과 같이 Person 클래스에 hello 속성이 있고, Person 클래스를 상속받아 Student 클래스를 만듭니다. 그다음에 Student로 인스턴스를 만들고 hello 속성에 접근해봅니다.
+이번에는 기반 클래스에 들어있는 인스턴스 속성을 사용해보겠습니다.
+다음과 같이 Person 클래스에 hello 속성이 있고, Person 클래스를 상속받아 Student 클래스를 만듭니다.
+그다음에 Student로 인스턴스를 만들고 hello 속성에 접근해봅니다.
 """
+class Programmer:
+    def __init__(self):  # 생성자가...
+        print("Programmer __init__")
+        self.habit = "머리를 쥐어 뜯는다"
+        self.money = 20000
+
+class PythonProgrammer(Programmer):
+    # Programmer.__init__ -> 새롭게 정의한 __init__ 덮어씌워지기 => 오버라이딩
+    def __init__(self, habit):  # <- 여기에도 들어가는 거 아냐?
+        print("PythonProgrammer __init__")
+        # 오버라이딩 -> 같은 이름의 메소드(함수)를 재정의.
+        self.habit = habit
+
+kim = Programmer()
+print(kim.habit, kim.money)
+# lee = PythonProgrammer()
+lee = PythonProgrammer("콧잔등 긁기")
+# TypeError: PythonProgrammer.__init__() missing 1 required positional argument: 'habit'
+# 'PythonProgrammer' object has no attribute 'money'
+# print(lee.habit, lee.money)
 
 
 
@@ -299,9 +519,20 @@ self.hello = '안녕하세요.'도 실행되지 않아서 속성이 만들어지
 * `super().메서드()`
 """
 
+print("----------------------")
+class PythonProgrammer(Programmer):
+    # Programmer.__init__ -> 새롭게 정의한 __init__ 덮어씌워지기 => 오버라이딩
+    def __init__(self, habit):  # <- 여기에도 들어가는 거 아냐?
+        # Programmer
+        super().__init__()  # self와 연결이 되어서... # Programmer __init__
+        print(self.money, self.habit)
+        print("PythonProgrammer __init__")
+        # 오버라이딩 -> 같은 이름의 메소드(함수)를 재정의.
+        self.habit = habit
+lee = PythonProgrammer("콧잔등 긁기")
+print(lee.habit, lee.money)
 
-
-"""### 기반 클래스를 초기화하지 않아도 되는 경우
+"""### 기반 클래스를 초기화하지 않아도 되는 경우 # super().__init__() 
 
 `만약 파생 클래스에서 __init__ 메서드를 생략한다면 기반 클래스의 __init__이 자동으로 호출되므로 super()는 사용하지 않아도 됩니다.`
 """
@@ -315,19 +546,73 @@ super는 다음과 같이 파생 클래스와 self를 넣어서 현재 클래스
 * `super(파생클래스, self).메서드`
 """
 
+class Human:
+    def run(self):
+        print("달려간다")
 
+class MetaHuman(Human):
+    def run(self):
+        super().run()
+        print("나는 MetaHuman, 더 빠르게 달려간다")
+'''
+달려간다
+더 빠르게 달려간다
+'''
+print("m = MetaHuman()")
+m = MetaHuman()
+m.run()
+
+class MetaMetaHuman(MetaHuman):
+    def run(self):
+        # super().run() # MetaHuman run
+        # super(MetaMetaHuman, self).run() # MetaHuman run
+        # Human run
+        super(MetaHuman, self).run() # MetaHuman(Human):
+        print("상당히 더 빠르게 달려간다")
+'''
+달려간다
+상당히 더 빠르게 달려간다
+'''
+print("joy = MetaMetaHuman()")
+joy = MetaMetaHuman()
+joy.run()
 
 """## 메서드 오버라이딩 사용하기
+-> 같은 이름의 새로운 함수(메소드)를 지정해서 다른 용도로 메소드를 사용하는 것
 
-이번에는 파생 클래스에서 기반 클래스의 메서드를 새로 정의하는 메서드 오버라이딩에 대해 알아보겠습니다. 다음과 같이 Person의 greeting 메서드가 있는 상태에서 Student에도 greeting 메서드를 만듭니다.
+이번에는 파생 클래스에서 기반 클래스의 메서드를 새로 정의하는 메서드 오버라이딩에 대해 알아보겠습니다.
+다음과 같이 Person의 greeting 메서드가 있는 상태에서 Student에도 greeting 메서드를 만듭니다.
 """
 
 
 
-"""오버라이딩(overriding)은 무시하다, 우선하다라는 뜻을 가지고 있는데 말 그대로 기반 클래스의 메서드를 무시하고 새로운 메서드를 만든다는 뜻입니다. 여기서는 Person 클래스의 greeting 메서드를 무시하고 Student 클래스에서 새로운 greeting 메서드를 만들었습니다.
+"""오버라이딩(overriding)은 무시하다, 우선하다라는 뜻을 가지고 있는데
+말 그대로 기반 클래스의 메서드를 무시하고 새로운 메서드를 만든다는 뜻입니다.
+여기서는 Person 클래스의 greeting 메서드를 무시하고 Student 클래스에서 새로운 greeting 메서드를 만들었습니다.
 
-그럼 메서드 오버라이딩은 왜 사용할까요? 보통 프로그램에서 어떤 기능이 같은 메서드 이름으로 계속 사용되어야 할 때 메서드 오버라이딩을 활용합니다.
+그럼 메서드 오버라이딩은 왜 사용할까요?
+보통 프로그램에서 어떤 기능이 같은 메서드 이름으로 계속 사용되어야 할 때 메서드 오버라이딩을 활용합니다.
 
-기반 클래스의 메서드를 재활용하면 중복을 줄일 수 있습니다. 다음과 같이 오버라이딩된 메서드에서 super()로 기반 클래스의 메서드를 호출해봅니다.
+기반 클래스의 메서드를 재활용하면 중복을 줄일 수 있습니다.
+다음과 같이 오버라이딩된 메서드에서 super()로 기반 클래스의 메서드를 호출해봅니다.
 """
 
+# 상속 -> 상호호환성
+class Flight: # 프로펠러 비행기
+    def fly(self):
+        print("프로펠러로 난다")
+
+class LuxuryFlight(Flight):  # 고급 비행기
+    pass  # 상속받은 그대로...
+
+class ZetFlight(Flight):
+    def fly(self):  # 오버라이딩
+        print("제트엔진으로 난다")
+
+f1 = Flight()  # 원본
+f2 = ZetFlight() # 건들였지만 fly라는 기능이 최소 있을 것...
+f3 = LuxuryFlight() # 이름만 -> 안 건들였음
+flight_list = [f1, f2, f3]
+
+for f in flight_list: # 비행기 리스트
+    f.fly()  # 비행 -> fly라는 기능은 존재한다
